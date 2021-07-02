@@ -1,6 +1,6 @@
 package node
 import(
-  "fmt"
+  //"fmt"
   //"crypto/ecdsa"
   //"crypto/rand"
 //  "crypto/sha256"
@@ -18,8 +18,7 @@ type Wallet struct{
 func SendCoin(send Wallet, recip Wallet, amount int){
   send.Coins = send.Coins - amount
   recip.Coins = recip.Coins + amount
-  fmt.Println("sender coin amount: " + string(send.Coins))
-  fmt.Println("recip coin amount: " + string(recip.Coins))
+
 }
 
 func NewWallet(name string, value int) Wallet{

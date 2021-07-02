@@ -37,7 +37,6 @@ func TxnHash(txn Txn) string{
 
 
 func CreateTxn(sender Wallet, recipient Wallet, amount int) Txn {
-  SendCoin(sender, recipient, amount)
   TXN := Txn{Sender: sender.Name, Recipient: recipient.Name, Amount: amount}
   //TXN.TxnID = CalcTxId(TXN)
   return TXN;
