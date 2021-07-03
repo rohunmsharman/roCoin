@@ -1,19 +1,22 @@
 package node
-/*
+
 import(
   "fmt"
 )
 
+func MineBlock(block Block) bool{
+
+  t := make([]byte, block.Target)
+  for i := 0; i < len(t); i++{
+    t[i] = 0
+  }
 
 
-func MineBlock(block Block, diff int) bool{
-  target := [diff]char{} //idk if this works, it assumes 0 equals null
-
-  for block.Hash[:diff] != target{
+  for block.Hash[:block.Target] != string(t){
     block.Nonce++
     block.Hash = CalculateHash(block)
-    fmt.Println("nonce: ",  block.Nonce, "Hash",  ) //syntax wrong + pointers confusing
+    fmt.Println("nonce: ",  block.Nonce, "Hash",  ) //syntax wrong
+
   }
   return true; //should return true once the hash meets min difficulty
 }
-*/

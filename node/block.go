@@ -1,21 +1,22 @@
 package node
 import(
-//  "fmt"
+  "fmt"
   "crypto/sha256"
   "encoding/hex"
+  //"encoding/json"
 //  "time"
-//  "strconv"
+  "strconv"
 )
 
 type Block struct{
-  //MerkleRoots string //merkle root of txns
-  txns []Txn //array of txns
   Index int //index on the chain
+  Txns []Txn //array of txns fixed length for the sake of the merkle tree implementation
   PrevHash string //prev block hash
   Hash string //current block hash
+  MerkleRoot string //merkle root of txns
   //Timestamp string //to be updated with timestamping
-  //Nonce int //nonce for PoW
-  //Target int //...target
+  Nonce int //nonce for PoW
+  Target int //...target
 }
 
 
@@ -23,15 +24,21 @@ func CalculateHash(block Block) string {
   //time := time.Now().String()
   //hash missing time and nonce
                           //replace TxnsToString with merkle MerkleRoot
-  h := sha256.Sum256([]byte(TxnsToString(block.txns) + block.PrevHash)) //strconv.Itoa(block.Nonce)
+  h := sha256.Sum256([]byte( block.PrevHash + strconv.Itoa(block.Nonce))) //CalculateMerkleRoot(block.Txns) +
   return (hex.EncodeToString(h[:]));
 }
 
 //rewrite NewBlock to take in an array of txns and output block, pull everything else of valid chain state
-func NewBlock(txns []Txn, index int, prevHash string, hash string) Block{
-  return Block{txns: txns, Index: index, PrevHash: prevHash, Hash: hash};
+func NewBlock(index int, txns []Txn, prevHash string, hash string, nonce int, target int) Block{
+  return Block{Index: index, Txns: txns, PrevHash: prevHash, Hash: hash, MerkleRoot: "asdf", Nonce: nonce, Target: target};
 }
 
+func PrintBlock(block Block){
+  fmt.Println("Block Index: ", block.Index)
+  fmt.Println("Hash: ", block.Hash)
+  fmt.Println("Previous Hash: ", block.PrevHash)
+  fmt.Println("Merkle Root: ", block.MerkleRoot)
+}
 /*
 func AddTxn(block *Block, tx Txn){
   block.txns = append(block.txns, tx)
