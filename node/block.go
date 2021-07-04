@@ -23,14 +23,14 @@ type Block struct{
 func CalculateHash(block Block) string {
   //time := time.Now().String()
   //hash missing time and nonce
-                          //replace TxnsToString with merkle MerkleRoot
-  h := sha256.Sum256([]byte( block.PrevHash + strconv.Itoa(block.Nonce))) //CalculateMerkleRoot(block.Txns) +
+                          
+  h := sha256.Sum256([]byte(block.MerkleRoot + block.PrevHash + strconv.Itoa(block.Nonce))) //
   return (hex.EncodeToString(h[:]));
 }
 
 //rewrite NewBlock to take in an array of txns and output block, pull everything else of valid chain state
-func NewBlock(index int, txns []Txn, prevHash string, hash string, nonce int, target int) Block{
-  return Block{Index: index, Txns: txns, PrevHash: prevHash, Hash: hash, MerkleRoot: "asdf", Nonce: nonce, Target: target};
+func NewBlock(index int, txns []Txn, prevHash string, hash string, merkleRoot string, nonce int, target int) Block{
+  return Block{Index: index, Txns: txns, PrevHash: prevHash, Hash: hash, MerkleRoot: merkleRoot, Nonce: nonce, Target: target};
 }
 
 func PrintBlock(block Block){
