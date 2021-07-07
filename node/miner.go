@@ -3,21 +3,45 @@ package node
 import(
   "fmt"
   "strconv"
+  "math/big"
 )
 
 func MineBlock(block Block) bool{
-  //implementation completely wrong: USE: https://justinmeiners.github.io/tiny-blockchain/
-  t := make([]byte, block.Target)
-  for i := 0; i < len(t); i++{
-    t[i] = 0
-  }
+  //big.Int.SetBytes returns hash and target (byte arrays) as the bytes of a big-endian unsigned integer
+  var hashInt big.Int
 
-  fmt.Println("mining")
-  for block.Hash[:block.Target] != string(t){
+
+  hash := CalculateHash(block)
+  hf := hashInt.SetBytes(hash[:]) //hf is used bc SetBytes returns size but sets hashInt to byte array
+  targetInt := big.NewInt(1)
+  targetInt.Lsh(targetInt, uint(256 - block.Target)) //shift the big.Int left by 256 - Target
+
+
+  fmt.Println("mining: ") //i think this is correct
+
+  for hf.Cmp(targetInt) != -1{
+
     block.Nonce++
-    block.Hash = CalculateHash(block)
-    fmt.Println("nonce: " + strconv.Itoa(block.Nonce) + " Hash: " + block.Hash)
+    block.Hash = HashToString(CalculateHash(block))
+    hash = CalculateHash(block)
+    hf = hashInt.SetBytes(hash[:])
+
+    /*
+    fmt.Println("hash size: ", hf)
+    fmt.Println()
+    fmt.Println("target size: ", targetInt)
+    */
+
 
   }
-  return true; //should return true once the hash meets min difficulty
+  fmt.Println("block mined! ")
+  fmt.Println("hash size: ", hf)
+  fmt.Println()
+  fmt.Println("target size: ", targetInt)
+  fmt.Println("nonce: " + strconv.Itoa(block.Nonce) + " Hash: " + block.Hash)
+  return true; //should return true once the hash meets min size
+}
+
+func IntToHex(n int64) []byte{
+  return []byte(strconv.FormatInt(n, 16))
 }

@@ -20,12 +20,16 @@ type Block struct{
 }
 
 
-func CalculateHash(block Block) string {
+func CalculateHash(block Block) [32]byte {
   //time := time.Now().String()
   //hash missing time and nonce
-                          
+
   h := sha256.Sum256([]byte(block.MerkleRoot + block.PrevHash + strconv.Itoa(block.Nonce))) //
-  return (hex.EncodeToString(h[:]));
+  return h;
+}
+
+func HashToString(hash [32]byte) string{
+  return (hex.EncodeToString(hash[:]))
 }
 
 //rewrite NewBlock to take in an array of txns and output block, pull everything else of valid chain state

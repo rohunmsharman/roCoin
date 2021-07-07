@@ -15,7 +15,7 @@ func IsChainValid(bc []Block) bool {
       fmt.Println("previous hashes not equal")
       return false;
     }
-    if bc[i].Hash != CalculateHash(bc[i]){
+    if bc[i].Hash != HashToString(CalculateHash(bc[i])){
       fmt.Println("current hashes not equal")
       return false;
     }
