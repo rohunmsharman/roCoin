@@ -21,7 +21,7 @@ func BlockToJson(block Block) []byte{
   return block_Json;
 }
 
-func TxnToJson(txn TXN) []byte{
+func TxnToJson(txn Txn) []byte{
   txn_json, err := json.Marshal(txn)
   if err != nil{
     fmt.Println(err)

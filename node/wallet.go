@@ -1,9 +1,9 @@
 package node
 import(
   //"fmt"
-  //"crypto/ecdsa"
-  //"crypto/rand"
-//  "crypto/elliptic"
+  "crypto/ecdsa"
+  "crypto/rand"
+  "crypto/elliptic"
   //"crypto"
   //"math/big"
 
@@ -13,32 +13,13 @@ type Wallet struct{
   Name string
   //privKeys map[string]string //maps txnID and private key
   Coins int
-  //PrivKey *ecdsa.PrivateKey //i don't think this workss
-  //PubKey ecdsa.PublicKey
+  PrivKey ecdsa.PrivateKey //i don't think this workss
+  PubKey ecdsa.PublicKey
 
 
 }
-//signing doesn't work yet
-/*
-func GenKeyPair(wallet Wallet) {
-  var err error
-  privKey, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader) //pubKey is a part of privKey
-  wallet.PrivKey = new(ecdsa.PrivateKey)
-  wallet.PrivKey = privKey
-
-  fmt.Println("priavte key: ", wallet.PrivKey.D)
-
-  //wallet.PubKey = wallet.PrivKey.PublicKey
 
 
-  //fmt.Println("public key: ", wallet.PubKey.X, " ", wallet.PubKey.Y)
-
-
-  if err != nil{
-    panic(err)
-  }
-}
-*/
 
 /*
 func SendCoin(send Wallet, recip Wallet, amount int){
@@ -49,7 +30,11 @@ func SendCoin(send Wallet, recip Wallet, amount int){
 */
 
 func NewWallet(name string, value int) Wallet{
-  return Wallet{Name: name, Coins: value}
+  privKey, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
+  if err != nil{
+    panic(err)
+  }
+  return Wallet{Name: name, Coins: value, PrivKey: *privKey, PubKey: privKey.PublicKey}
 }
 
 /*

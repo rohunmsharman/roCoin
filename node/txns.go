@@ -6,13 +6,13 @@ import(
   //"crypto/ecdsa"
   //"time"
   "encoding/hex"
-  //"strings"
+  "encoding/gob"
   "strconv"
 )
 
 type Txn struct{
-  Sender string //change to sender public address
-  Recipient string //change to recipient public address
+  SenderPubKey string //sender pubkey used to verify signature
+  RecipPubKey string 
   Amount int
   TxnID string
 }
@@ -35,17 +35,24 @@ func TxnToByte(txn Txn) []byte{
 
 // fix encoding to string, used as Txn ID, rewrite to take txn in directly
 func TxnHash(txn Txn) string{
-  txId := sha256.Sum256([]byte(txn.Sender + txn.Recipient + strconv.Itoa(txn.Amount)))
+  txId := sha256.Sum256([]byte(txn.RecipPubKey + strconv.Itoa(txn.Amount)))
   return (hex.EncodeToString(txId[:])); //check the [:]
 }
 
 //returns new txn
-func CreateTxn(sender Wallet, recipient Wallet, amount int) Txn {
-  TXN := Txn{Sender: sender.Name, Recipient: recipient.Name, Amount: amount}
+func CreateTxn(sender Wallet, recipient Wallet, amount int) Txn
+
+  TXN := Txn{SenderPubKey: sender.Name, RecipPubKey: recipient.Name, Amount: amount}
   //TXN.TxnID = CalcTxId(TXN)
   return TXN;
 }
 
+//encode pubkey (recipient) to be hashed
+func KeyEncoder(wallet Wallet) []byte{
+  encoder := gob.NewEncoder()
+
+  wallet.PrivKey
+}
 
 //def needs to be redone, can only take numbers whose divison by two always results in an even number
 func CalculateMerkleRoot(txn []Txn) string {

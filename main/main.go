@@ -14,14 +14,14 @@ import(
 func main() {
 
   //SIGNING TEST
-  /*
+
   w1 := node.NewWallet("bob", 500)
-  node.GenKeyPair(w1)
-  fmt.Println(w1.PrivKey)
-  */
+  //node.GenKeyPair(w1)
+  fmt.Println(w1)
+
 
   //GEN TEST
-
+  /*
   genTxns := []node.Txn{}
   genesis := node.NewBlock(0, genTxns, "0", "nil", "nil", 0, 3)
   genesis.Hash = node.HashToString(node.CalculateHash(genesis))
@@ -70,6 +70,7 @@ func main() {
   fmt.Println(len(node.ReadChain()))
 
   fmt.Println(string(node.BlockToJson(chain[1])))
+  */
   //fmt.Println("hash: ")
   //fmt.Println(b1.Hash[:b1.Target])
   //node.MineBlock(b1)
