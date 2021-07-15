@@ -3,6 +3,7 @@ package node
 import(
   "fmt"
   "crypto/sha256"
+  //"crypto/ecdsa"
   //"time"
   "encoding/hex"
   //"strings"
@@ -10,12 +11,21 @@ import(
 )
 
 type Txn struct{
-  Sender string
-  Recipient string
+  Sender string //change to sender public address
+  Recipient string //change to recipient public address
   Amount int
   TxnID string
 }
+/*
+IMPLEMENT LATER
+type TxnIn struct{
 
+}
+
+type TxnOut struct{
+
+}
+*/
 //converts a txn to byte array
 func TxnToByte(txn Txn) []byte{
     str := txn.Sender + txn.Recipient + strconv.Itoa(txn.Amount) + txn.TxnID

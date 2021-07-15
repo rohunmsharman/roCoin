@@ -48,12 +48,3 @@ func AddTxn(block *Block, tx Txn){
   block.txns = append(block.txns, tx)
 }
 */
-
-
-
-//implement merkle tree
-/*
-func MerkleRoot(block Block){
-  //use []txns in block to calculate merkleroot
-}
-*/

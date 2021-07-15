@@ -2,6 +2,8 @@ package node
 //meant for chechking chain validity and functions related to the chain
 import(
   "fmt"
+  "os"
+  "encoding/gob"
 )
 func CreateChain(genBlock Block) []Block{
   return []Block{genBlock};
@@ -33,4 +35,38 @@ func IsChainValid(bc []Block) bool {
 
   fmt.Println("blockchain is valid")
   return true;
+}
+
+func SaveChain(bc []Block){
+  chainFile, err := os.Create("savedChain.gob")
+
+  if err != nil {
+    fmt.Println(err)
+    os.Exit(1)
+  }
+
+  dataEncoder := gob.NewEncoder(chainFile)
+  dataEncoder.Encode(bc)
+  fmt.Println("current chain saved under 'savedChain.gob' ")
+}
+
+func ReadChain() []Block{
+  var bc []Block
+  chainFile, err := os.Open("savedChain.gob")
+
+  if err != nil{
+    fmt.Println(err)
+    os.Exit(1)
+  }
+
+  dataDecoder := gob.NewDecoder(chainFile)
+  err = dataDecoder.Decode(&bc)
+
+  if err != nil{
+    fmt.Println(err)
+    os.Exit(1)
+  }
+
+  chainFile.Close()
+  return bc;
 }

@@ -13,6 +13,14 @@ import(
 
 func main() {
 
+  //SIGNING TEST
+  /*
+  w1 := node.NewWallet("bob", 500)
+  node.GenKeyPair(w1)
+  fmt.Println(w1.PrivKey)
+  */
+
+  //GEN TEST
 
   genTxns := []node.Txn{}
   genesis := node.NewBlock(0, genTxns, "0", "nil", "nil", 0, 3)
@@ -40,13 +48,11 @@ func main() {
   mR := node.CalculateMerkleRoot(tstTxns)
   //fmt.Println(node.CalculateMerkleRoot(tstTxns))
 
-  fmt.Println("alice")
-  alice.Coins = tstTxns[0].Amount + alice.Coins
-  fmt.Println(alice.Coins)
 
-  fmt.Println("bob")
+  alice.Coins = tstTxns[0].Amount + alice.Coins
+
   bob.Coins = bob.Coins - tstTxns[0].Amount
-  fmt.Println(bob.Coins)
+
 
   b1 := node.NewBlock(1, tstTxns, genesis.Hash, "nil", mR, 0, 15)
   b1.Hash = node.HashToString(node.CalculateHash(b1))
@@ -56,20 +62,18 @@ func main() {
   if chain[0].Hash != chain[1].PrevHash{
     fmt.Println("mismatched hashes")
   }
-  
+
   node.MineBlock(b1)
+
+  node.SaveChain(chain)
+
+  fmt.Println(len(node.ReadChain()))
+
+  fmt.Println(string(node.BlockToJson(chain[1])))
   //fmt.Println("hash: ")
   //fmt.Println(b1.Hash[:b1.Target])
   //node.MineBlock(b1)
 
 
-
-/*
-  var hash big.Int
-  h := sha256.Sum256([]byte("asdfasdfasdfoahweliufasbldiguaelwiugbalweoguas;d"))
-  hf := hash.SetBytes(h[:])
-  fmt.Println(hf) //outputs number
-  //fmt.Println(h)
-*/
 
 }
