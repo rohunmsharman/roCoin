@@ -13,7 +13,7 @@ type Wallet struct{
   Name string
   //privKeys map[string]string //maps txnID and private key
   Coins int
-  PrivKey ecdsa.PrivateKey //i don't think this workss
+  PrivKey ecdsa.PrivateKey 
   PubKey ecdsa.PublicKey
 
 

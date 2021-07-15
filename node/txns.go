@@ -3,7 +3,7 @@ package node
 import(
   "fmt"
   "crypto/sha256"
-  //"crypto/ecdsa"
+  "crypto/ecdsa"
   //"time"
   "encoding/hex"
   "encoding/gob"
@@ -11,8 +11,9 @@ import(
 )
 
 type Txn struct{
-  SenderPubKey string //sender pubkey used to verify signature
-  RecipPubKey string 
+  SenderSig string //sender pubkey used to verify signature
+  RecipPubKey ecdsa.PublicKey
+  SenderPubKey ecdsa.PublicKey
   Amount int
   TxnID string
 }
@@ -28,14 +29,14 @@ type TxnOut struct{
 */
 //converts a txn to byte array
 func TxnToByte(txn Txn) []byte{
-    str := txn.Sender + txn.Recipient + strconv.Itoa(txn.Amount) + txn.TxnID
+    str := txn.Sender + txn.Recipient + strconv.Itoa(txn.Amount) + txn.TxnID //REWRITE
     byteTxn := []byte(str)
     return byteTxn;
 }
 
 // fix encoding to string, used as Txn ID, rewrite to take txn in directly
 func TxnHash(txn Txn) string{
-  txId := sha256.Sum256([]byte(txn.RecipPubKey + strconv.Itoa(txn.Amount)))
+  txId := sha256.Sum256([]byte(txn.RecipPubKey + strconv.Itoa(txn.Amount))) //REWRITE
   return (hex.EncodeToString(txId[:])); //check the [:]
 }
 
@@ -47,11 +48,19 @@ func CreateTxn(sender Wallet, recipient Wallet, amount int) Txn
   return TXN;
 }
 
-//encode pubkey (recipient) to be hashed
+//encode pubkey (recipient) to be hashed, this method will need to be rewritten in order to support networking
 func KeyEncoder(wallet Wallet) []byte{
-  encoder := gob.NewEncoder()
+  var PubKeyByte []byte
+  enc := gob.NewEncoder(PubKeyByte)
 
-  wallet.PrivKey
+  //dec := gob.NewDecoder(PubKeyByte)
+
+  err := enc.Encode(wallet.PubKey)
+  if err != nil{
+    panic(err)
+  }
+
+  return PubKeyByte;
 }
 
 //def needs to be redone, can only take numbers whose divison by two always results in an even number
