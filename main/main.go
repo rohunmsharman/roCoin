@@ -7,12 +7,13 @@ import(
   //"encoding/hex"
   //"strconv"
   //"unsafe"
-  "roCoin.com/roCoin/node" //the goroot issue was fixed by roCoin.com ....
+  "roCoin/node"
+  //"roCoin.com/roCoin/node" //the goroot issue was fixed by roCoin.com ....
 )
 
 
 func main() {
-
+  //cmd.Execute()
   //SIGNING TEST
 
   //w1 := node.NewWallet("bob", 500)
