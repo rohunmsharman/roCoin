@@ -5,15 +5,17 @@ import(
   "crypto/sha256"
   "crypto/ecdsa"
   //"time"
+  "os"
+  "io/ioutil"
   "encoding/hex"
   "encoding/gob"
   "strconv"
 )
 
 type Txn struct{
-  SenderSig string //sender pubkey used to verify signature
   RecipPubKey ecdsa.PublicKey
   SenderPubKey ecdsa.PublicKey
+  SenderSig []byte //sender pubkey used to verify signature
   Amount int
   TxnID string
 }
@@ -27,41 +29,44 @@ type TxnOut struct{
 
 }
 */
-//converts a txn to byte array
-func TxnToByte(txn Txn) []byte{
-    str := txn.Sender + txn.Recipient + strconv.Itoa(txn.Amount) + txn.TxnID //REWRITE
-    byteTxn := []byte(str)
-    return byteTxn;
-}
 
 // fix encoding to string, used as Txn ID, rewrite to take txn in directly
 func TxnHash(txn Txn) string{
-  txId := sha256.Sum256([]byte(txn.RecipPubKey + strconv.Itoa(txn.Amount))) //REWRITE
+  txnToHash := append(PubKeyEncoder(txn.RecipPubKey))
+  txId := sha256.Sum256(txnToHash[:])
   return (hex.EncodeToString(txId[:])); //check the [:]
 }
 
 //returns new txn
-func CreateTxn(sender Wallet, recipient Wallet, amount int) Txn
-
-  TXN := Txn{SenderPubKey: sender.Name, RecipPubKey: recipient.Name, Amount: amount}
-  //TXN.TxnID = CalcTxId(TXN)
+func CreateTxn(sender Wallet, recipient Wallet, amount int) Txn{
+  TXN := Txn{RecipPubKey: recipient.PubKey, SenderPubKey: sender.PubKey, Amount: amount}
+  TXN.TxnID = TxnHash(TXN)
+  //add signature
   return TXN;
 }
 
 //encode pubkey (recipient) to be hashed, this method will need to be rewritten in order to support networking
-func KeyEncoder(wallet Wallet) []byte{
-  var PubKeyByte []byte
-  enc := gob.NewEncoder(PubKeyByte)
+func PubKeyEncoder(recipPubKey ecdsa.PublicKey) []byte{
 
-  //dec := gob.NewDecoder(PubKeyByte)
-
-  err := enc.Encode(wallet.PubKey)
+  pubKeyFile, err := os.Create("pubKeyFile.gob")
+  enc := gob.NewEncoder(pubKeyFile)
   if err != nil{
     panic(err)
   }
+  //dec := gob.NewDecoder(PubKeyByte)
 
-  return PubKeyByte;
+  err2 := enc.Encode(recipPubKey)
+  if err2 != nil{
+    panic(err2)
+  }
+  pubKeyBytes, err3 := ioutil.ReadFile("pubKeyFile.gob")
+  if err3 != nil{
+    panic(err3)
+  }
+  return pubKeyBytes;
 }
+
+
 
 //def needs to be redone, can only take numbers whose divison by two always results in an even number
 func CalculateMerkleRoot(txn []Txn) string {
@@ -96,4 +101,11 @@ func CalculateMerkleRoot(txn []Txn) string {
 
   }
   return txnHashes[0]; //outputs parents hash
+}
+
+//converts a txn to byte array
+func TxnToByte(txn Txn) []byte{
+    str := strconv.Itoa(txn.Amount) + txn.TxnID //REWRITE
+    byteTxn := []byte(str)
+    return byteTxn;
 }

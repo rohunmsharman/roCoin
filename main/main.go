@@ -1,7 +1,7 @@
 package main
 
 import(
-  "fmt"
+  //"fmt"
   //"crypto/sha256"
   //"math/big"
   //"encoding/hex"
@@ -15,9 +15,12 @@ func main() {
 
   //SIGNING TEST
 
-  w1 := node.NewWallet("bob", 500)
+  //w1 := node.NewWallet("bob", 500)
+  //w2 := node.NewWallet("alice", 700)
   //node.GenKeyPair(w1)
-  fmt.Println(w1)
+  //fmt.Println(w1)
+
+  //fmt.Println(node.CreateTxn(w1, w2, 50))
 
 
   //GEN TEST
