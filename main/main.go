@@ -1,8 +1,8 @@
 package main
 
 import(
-  //"fmt"
-  //"crypto/sha256"
+  "fmt"
+  //"crypto/ecdsa"
   //"math/big"
   //"encoding/hex"
   //"strconv"
@@ -13,13 +13,17 @@ import(
 
 
 func main() {
-  //cmd.Execute()
-  //SIGNING TEST
+  
+  genTxn := node.Txn{RecipPubKey: nil, SenderPubKey: nil, }
+  w1 := node.NewWallet("bob")
+  w2 := node.NewWallet("alice")
+  //fmt.Println(w1.PrivKey.PublicKey)
 
-  //w1 := node.NewWallet("bob", 500)
-  //w2 := node.NewWallet("alice", 700)
-  //node.GenKeyPair(w1)
-  //fmt.Println(w1)
+  tx1 := node.CreateTxn(w1, w2, 50)
+  //fmt.Println(tx1.SenderPubKey.XY)
+
+  fmt.Println(node.VerifySig(w1, tx1))
+  //fmt.Println(tx1)
 
   //fmt.Println(node.CreateTxn(w1, w2, 50))
 

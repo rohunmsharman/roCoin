@@ -11,30 +11,46 @@ import(
 
 type Wallet struct{
   Name string
-  //privKeys map[string]string //maps txnID and private key
+  PrivKeys map[string]int //maps txnID and private key !TEMPORARY BC THIS DOESN'T ACTUALLY STORE TXN, DB MUST BE ADDED
   Coins int
-  PrivKey ecdsa.PrivateKey 
+  PrivKey ecdsa.PrivateKey
   PubKey ecdsa.PublicKey
 
+}
 
+func AddUTXO(wallet Wallet, txn Txn){
+  //add check to make sure UTXO belongs to the wallet
+  wallet.PrivKeys[txn.TxnID] = txn.Amount
+}
+
+func GetAmount(wallet Wallet) int {
+  sum := 0
+  for txnID, amount := range wallet.PrivKeys {
+    sum = sum + amount
+  }
 }
 
 
 
-/*
 func SendCoin(send Wallet, recip Wallet, amount int){
-  send.Coins = send.Coins - amount
-  recip.Coins = recip.Coins + amount
+  for txnID, amt := range wallet.PrivKeys{
+    if amt == amount{
+      CreateTxn(send, recip, amount)
+      recip.PrivKeys[txnID] = amt
+      delete(send.PrivKeys, txnID)
+    }
+  }
 
 }
-*/
 
-func NewWallet(name string, value int) Wallet{
+
+func NewWallet(name string) Wallet{
+  pK := make(map[string]int)
   privKey, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
   if err != nil{
     panic(err)
   }
-  return Wallet{Name: name, Coins: value, PrivKey: *privKey, PubKey: privKey.PublicKey}
+  return Wallet{Name: name, PrivKeys: pK, Coins: value, PrivKey: *privKey, PubKey: privKey.PublicKey}
 }
 
 /*

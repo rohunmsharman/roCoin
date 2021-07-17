@@ -4,68 +4,60 @@ import(
   "fmt"
   "crypto/sha256"
   "crypto/ecdsa"
-  //"time"
-  "os"
-  "io/ioutil"
+  "crypto/rand"
+  "math/big"
+  //"io/ioutil"
   "encoding/hex"
-  "encoding/gob"
+  //"encoding/gob"
   "strconv"
 )
 
 type Txn struct{
-  RecipPubKey ecdsa.PublicKey
-  SenderPubKey ecdsa.PublicKey
+  RecipPubKey PublicKey
+  SenderPubKey PublicKey
   SenderSig []byte //sender pubkey used to verify signature
   Amount int
   TxnID string
 }
-/*
-IMPLEMENT LATER
-type TxnIn struct{
 
+//for hashing purposes, will depracate when networking begins
+type PublicKey struct{
+  X big.Int
+  Y big.Int
+  XY []byte
 }
-
-type TxnOut struct{
-
-}
-*/
 
 // fix encoding to string, used as Txn ID, rewrite to take txn in directly
 func TxnHash(txn Txn) string{
-  txnToHash := append(PubKeyEncoder(txn.RecipPubKey))
-  txId := sha256.Sum256(txnToHash[:])
+  txId := sha256.Sum256(txn.RecipPubKey.XY[:])
   return (hex.EncodeToString(txId[:])); //check the [:]
 }
 
 //returns new txn
 func CreateTxn(sender Wallet, recipient Wallet, amount int) Txn{
-  TXN := Txn{RecipPubKey: recipient.PubKey, SenderPubKey: sender.PubKey, Amount: amount}
+
+  recipKey := PublicKey{X: *recipient.PubKey.X, Y: *recipient.PubKey.Y}
+  recipKey.XY = append(recipKey.X.Bytes(), recipKey.Y.Bytes()...)
+  sendKey := PublicKey{X: *sender.PubKey.X, Y: *sender.PubKey.Y}
+  sendKey.XY = append(sendKey.X.Bytes(), recipKey.Y.Bytes()...)
+  TXN := Txn{RecipPubKey: recipKey, SenderPubKey: sendKey, Amount: amount}
   TXN.TxnID = TxnHash(TXN)
-  //add signature
+  TXN.SenderSig = SignTxn(sender, TXN)
   return TXN;
 }
 
-//encode pubkey (recipient) to be hashed, this method will need to be rewritten in order to support networking
-func PubKeyEncoder(recipPubKey ecdsa.PublicKey) []byte{
-
-  pubKeyFile, err := os.Create("pubKeyFile.gob")
-  enc := gob.NewEncoder(pubKeyFile)
+func SignTxn(wallet Wallet, txn Txn) []byte{
+  sig, err := ecdsa.SignASN1(rand.Reader, &wallet.PrivKey, []byte(txn.TxnID))
   if err != nil{
     panic(err)
   }
-  //dec := gob.NewDecoder(PubKeyByte)
-
-  err2 := enc.Encode(recipPubKey)
-  if err2 != nil{
-    panic(err2)
-  }
-  pubKeyBytes, err3 := ioutil.ReadFile("pubKeyFile.gob")
-  if err3 != nil{
-    panic(err3)
-  }
-  return pubKeyBytes;
+  return sig;
 }
 
+func VerifySig(wallet Wallet, txn Txn) bool {
+  fmt.Println("signature: %x\n", txn.SenderSig) //formatting for signature
+  return ecdsa.VerifyASN1(&wallet.PrivKey.PublicKey, []byte(txn.TxnID), txn.SenderSig[:]);
+}
 
 
 //def needs to be redone, can only take numbers whose divison by two always results in an even number
