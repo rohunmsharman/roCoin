@@ -1,20 +1,22 @@
 package main
 
 import(
-  "fmt"
+  //"fmt"
   //"crypto/ecdsa"
   //"math/big"
   //"encoding/hex"
   //"strconv"
   //"unsafe"
-  "roCoin/node"
+  //"roCoin/node"
+  "roCoin/cmd"
   //"roCoin.com/roCoin/node" //the goroot issue was fixed by roCoin.com ....
 )
 
 
 func main() {
-  
-  genTxn := node.Txn{RecipPubKey: nil, SenderPubKey: nil, }
+  cmd.Execute() //RUN EVERYTHING THROUGH CLI NOW
+
+/*  genTxn := node.Txn{RecipPubKey: nil, SenderPubKey: nil, }
   w1 := node.NewWallet("bob")
   w2 := node.NewWallet("alice")
   //fmt.Println(w1.PrivKey.PublicKey)
@@ -23,6 +25,7 @@ func main() {
   //fmt.Println(tx1.SenderPubKey.XY)
 
   fmt.Println(node.VerifySig(w1, tx1))
+  */
   //fmt.Println(tx1)
 
   //fmt.Println(node.CreateTxn(w1, w2, 50))

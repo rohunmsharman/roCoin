@@ -28,3 +28,11 @@ func TxnToJson(txn Txn) []byte{
   }
   return txn_json;
 }
+
+func WalletToJson(wallet Wallet) []byte{
+  wallet_json, err := json.Marshal(wallet)
+  if err != nil{
+    fmt.Println(err)
+  }
+  return wallet_json
+}

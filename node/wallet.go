@@ -1,6 +1,6 @@
 package node
 import(
-  //"fmt"
+  "fmt"
   "crypto/ecdsa"
   "crypto/rand"
   "crypto/elliptic"
@@ -25,15 +25,16 @@ func AddUTXO(wallet Wallet, txn Txn){
 
 func GetAmount(wallet Wallet) int {
   sum := 0
-  for txnID, amount := range wallet.PrivKeys {
+  for _, amount := range wallet.PrivKeys {
     sum = sum + amount
   }
+  return sum;
 }
 
 
 
 func SendCoin(send Wallet, recip Wallet, amount int){
-  for txnID, amt := range wallet.PrivKeys{
+  for txnID, amt := range send.PrivKeys{
     if amt == amount{
       CreateTxn(send, recip, amount)
       recip.PrivKeys[txnID] = amt
@@ -44,13 +45,18 @@ func SendCoin(send Wallet, recip Wallet, amount int){
 }
 
 
-func NewWallet(name string) Wallet{
+func NewWallet(name string, amount int) Wallet{
   pK := make(map[string]int)
   privKey, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
   if err != nil{
     panic(err)
   }
-  return Wallet{Name: name, PrivKeys: pK, Coins: value, PrivKey: *privKey, PubKey: privKey.PublicKey}
+  fmt.Println("Name: ", name)
+  fmt.Println("PrivKeys: ", pK)
+  fmt.Println("Coins: ", amount)
+  fmt.Println("PrivKey: ", privKey.D.String()) //something of about formatting but its fine
+  fmt.Println("PubKey: ", *privKey.PublicKey.X, " ", *privKey.PublicKey.Y) //something of about formatting but its fine
+  return Wallet{Name: name, PrivKeys: pK, Coins: amount, PrivKey: *privKey, PubKey: privKey.PublicKey}
 }
 
 /*
