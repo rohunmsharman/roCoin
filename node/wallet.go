@@ -4,7 +4,7 @@ import(
   "crypto/ecdsa"
   "crypto/rand"
   "crypto/elliptic"
-  //"crypto"
+  //"encoding/gob"
   //"math/big"
 
 )
@@ -23,7 +23,7 @@ func AddUTXO(wallet Wallet, txn Txn){
   wallet.PrivKeys[txn.TxnID] = txn.Amount
 }
 
-func GetAmount(wallet Wallet) int {
+func GetAmount(wallet Wallet) int { //to be deprecated with DB
   sum := 0
   for _, amount := range wallet.PrivKeys {
     sum = sum + amount
@@ -46,26 +46,18 @@ func SendCoin(send Wallet, recip Wallet, amount int){
 
 
 func NewWallet(name string, amount int) Wallet{
+  wName := name + "_wallet"
   pK := make(map[string]int)
   privKey, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
   if err != nil{
     panic(err)
   }
-  fmt.Println("Name: ", name)
+  fmt.Println("Name: ", wName)
   fmt.Println("PrivKeys: ", pK)
   fmt.Println("Coins: ", amount)
   fmt.Println("PrivKey: ", privKey.D.String()) //something of about formatting but its fine
   fmt.Println("PubKey: ", *privKey.PublicKey.X, " ", *privKey.PublicKey.Y) //something of about formatting but its fine
-  return Wallet{Name: name, PrivKeys: pK, Coins: amount, PrivKey: *privKey, PubKey: privKey.PublicKey}
-}
+  //local storage function located in store.go
 
-/*
-func PrintWallet(wallet Wallet) {
-  fmt.Println("Name: ", wallet.Name)
-  fmt.Println("Coins: ", wallet.Coins)
-  fmt.Println("Private Key: ", wallet.PrivKeyStr)
-  fmt.Println("Public Key(s): X: ", wallet.PubKeyStr)
+  return Wallet{Name: wName, PrivKeys: pK, Coins: amount, PrivKey: *privKey, PubKey: privKey.PublicKey}
 }
-*/
-
-//right now this just returns public key
