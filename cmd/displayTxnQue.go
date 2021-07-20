@@ -21,26 +21,26 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// viewPeersCmd represents the viewPeers command
-var viewPeersCmd = &cobra.Command{
-	Use:   "viewPeers",
-	Short: "shows all peers on the network",
-	Long: `lists all peers by name and publicAddress`,
+// displayTxnQueCmd represents the displayTxnQue command
+var displayTxnQueCmd = &cobra.Command{
+	Use:   "displayTxnQue",
+	Short: "shows all txns in the que to be mined",
+	Long: `shows all txns in the txn pool`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("viewPeers called")
+		fmt.Println("displayTxnQue called")
 	},
 }
 
 func init() {
-	rootCmd.AddCommand(viewPeersCmd)
+	rootCmd.AddCommand(displayTxnQueCmd)
 
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	// viewPeersCmd.PersistentFlags().String("foo", "", "A help for foo")
+	// displayTxnQueCmd.PersistentFlags().String("foo", "", "A help for foo")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// viewPeersCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	// displayTxnQueCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

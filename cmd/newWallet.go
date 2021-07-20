@@ -25,16 +25,17 @@ import (
 // newWalletCmd represents the newWallet command
 var newWalletCmd = &cobra.Command{
 	Use:   "newWallet",
-	Short: "generates new wallet, returns private and public key pair",
-	Long: `A longer `,
+	Short: "generates new wallet",
+	Long: `creates a new wallet, prints out wallet info, will save wallet info as gob file `,
 	Args: cobra.MinimumNArgs(2),
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("newWallet called")
+		fmt.Println("creating new wallet")
 		tInt, err := strconv.Atoi(args[1])
 		if err != nil{
 			panic(err)
 		}
-		node.NewWallet(args[0], tInt)
+		node.SaveWallet(node.NewWallet(args[0], tInt))
+
 		//fmt.Println(w1)
 	},
 }
