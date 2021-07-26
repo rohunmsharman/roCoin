@@ -15,12 +15,8 @@ limitations under the License.
 */
 package main
 
-
-import (
-  "roCoin/cmd"
-)
+import
 
 func main() {
  //idk what to do with this yet
- cmd.Execute()
 }
