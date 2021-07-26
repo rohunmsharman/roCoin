@@ -24,7 +24,7 @@ import (
 // displayUTXOsCmd represents the displayUTXOs command
 var displayUTXOsCmd = &cobra.Command{
 	Use:   "displayUTXOs",
-	Short: "A brief description of your command",
+	Short: "displays a list of all utxos for your wallet",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
 
