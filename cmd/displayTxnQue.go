@@ -25,7 +25,7 @@ import (
 var displayTxnQueCmd = &cobra.Command{
 	Use:   "displayTxnQue",
 	Short: "shows all txns in the que to be mined",
-	Long: `shows all txns in the txn pool`,
+	Long: `shows all txns in the txn pool in new terminal window`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("displayTxnQue called")
 	},
