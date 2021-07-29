@@ -16,10 +16,12 @@ limitations under the License.
 package cmd
 
 import (
+/*
 	"fmt"
 	"context"
 	"roCoin/node"
 	"roCoin/networking"
+	*/
 	"github.com/spf13/cobra"
 )
 
@@ -30,6 +32,7 @@ var connectCmd = &cobra.Command{
 	Long: `asdf`,
 	Args: cobra.MinimumNArgs(2), //port number and txnStream name
 	Run: func(cmd *cobra.Command, args []string) {
+		/*
 		fmt.Println("setting up connection")
 		port, err := strconv.Atoi(args[0])
 		if err != nil {
@@ -38,7 +41,9 @@ var connectCmd = &cobra.Command{
 		}
 		ctx := context.Background()
 		networking.Setup(ctx, port)
+		*/
 	},
+
 }
 
 func init() {

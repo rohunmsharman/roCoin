@@ -9,10 +9,12 @@ require (
 	github.com/ipfs/go-log/v2 v2.3.0 // indirect
 	github.com/klauspost/cpuid/v2 v2.0.8 // indirect
 	github.com/koron/go-ssdp v0.0.2 // indirect
-	github.com/libp2p/go-libp2p v0.14.4 // indirect
-	github.com/libp2p/go-libp2p-core v0.8.6 // indirect
+	github.com/libp2p/go-libp2p v0.14.4
+	github.com/libp2p/go-libp2p-core v0.8.6
 	github.com/libp2p/go-libp2p-discovery v0.5.1 // indirect
+	github.com/libp2p/go-libp2p-pubsub v0.5.3
 	github.com/miekg/dns v1.1.43 // indirect
+	github.com/multiformats/go-multiaddr v0.3.3
 	github.com/prometheus/common v0.29.0 // indirect
 	github.com/prometheus/procfs v0.7.0 // indirect
 	github.com/spf13/cobra v1.2.1

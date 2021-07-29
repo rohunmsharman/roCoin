@@ -1,13 +1,18 @@
 package networking
 
 import (
-  "fmt"
+  //"fmt"
   "context"
   "roCoin/node"
   "github.com/libp2p/go-libp2p-core/peer"
+  "encoding/json"
   pubsub "github.com/libp2p/go-libp2p-pubsub"
-
 )
+
+/*
+this implementation of p2p pubsub is probably not the best, i basically rewrote github.com/libp2p/go-libp2p/tree/master/examples/pubsub/chat
+w/ my own gui. using libp2p seems like it'll be easier than hardcoding a networking protocol, but this whole thing is tbd
+*/
 const TxnStreamBufSize = 128
 //TxnStream is a subscription to a single PubSub topic, txns can be published to the topic.
 //txns are pushed to the Txns channel
@@ -17,7 +22,8 @@ type TxnStream struct{
 
   ctx context.Context
   ps *pubsub.PubSub
-  topic *pubsub.topicsub *pubsub.Subscription
+  topic *pubsub.Topic
+  sub *pubsub.Subscription
 
   TxnStreamName string
   self peer.ID
@@ -25,13 +31,13 @@ type TxnStream struct{
 
 func JoinTxnStream(ctx context.Context, ps *pubsub.PubSub, selfID peer.ID, streamName string) (*TxnStream, error) {
   //join the pubsub topic
-  topic, err := ps.Join(topicName(streamName))
+  topic, err := ps.Join(TopicName(streamName))
   if err != nil {
     return nil, err
   }
 
   //subscribe to the topic
-  sub, err := topic.Subscibe()
+  sub, err := topic.Subscribe()
   if err != nil {
     return nil, err
   }
@@ -42,8 +48,8 @@ func JoinTxnStream(ctx context.Context, ps *pubsub.PubSub, selfID peer.ID, strea
     topic: topic,
     sub: sub,
     self: selfID,
-    streamName: streamName,
-    Transactions: make(chan *node.Txns, TxnStreamBufSize),
+    TxnStreamName: streamName,
+    Transactions: make(chan *node.Txn, TxnStreamBufSize),
   }
 
   //start reading messages from the subscription in a loop
