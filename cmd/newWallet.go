@@ -24,7 +24,7 @@ import (
 
 // newWalletCmd represents the newWallet command
 var newWalletCmd = &cobra.Command{
-	Use:   "newWallet",
+	Use:   "newWallet", //ADD FLAGS!!
 	Short: "generates new wallet",
 	Long: `creates a new wallet, prints out wallet info, will save wallet info as gob file `,
 	Args: cobra.MinimumNArgs(2),
@@ -44,7 +44,7 @@ func init() {
 	rootCmd.AddCommand(newWalletCmd)
 
 	// Here you will define your flags and configuration settings.
-
+	//ADD FLAGS
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
 	// newWalletCmd.PersistentFlags().String("foo", "", "A help for foo")

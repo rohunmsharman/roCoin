@@ -12,7 +12,7 @@ import (
 	//mrand "math/rand"
 	//"os"
   //"roCoin/node"
-  
+
 	"github.com/libp2p/go-libp2p"
 	//"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/host"
@@ -30,18 +30,18 @@ const DiscoveryInterval = time.Hour
 //to be use in mDNS advertisements to discover other chat peers
 const DiscoveryServiceTag = "roCoin-net"
 
-func Setup(ctx context.Context, port int) (host.Host, *pubsub.PubSub, error) {
+func Setup(ctx context.Context) (host.Host, *pubsub.PubSub, error) { //add argument for specific port
   //create new libp2p Host listening on a random tcp port
   h, err := libp2p.New(ctx, libp2p.ListenAddrStrings("/ip4/0.0.0.0/tcp/0"))
   if err != nil {
-    fmt.Println(err)
+    panic(err)
     return nil, nil, err
   }
 
   //create a new pubsub service
   ps, err := pubsub.NewGossipSub(ctx, h)
   if err != nil {
-    fmt.Println(err)
+    panic(err)
     return nil, nil, err
   }
   return h, ps, nil;

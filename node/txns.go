@@ -20,6 +20,13 @@ type Txn struct{
   TxnID string
 }
 
+//move to testing package
+type TestTxn struct {
+  Sender string
+  Recipient string
+  Amount int
+}
+
 //for hashing purposes, will depracate when networking begins
 type PublicKey struct{
   X big.Int
@@ -61,11 +68,11 @@ func VerifySig(wallet Wallet, txn Txn) bool {
 
 
 //def needs to be redone, can only take numbers whose divison by two always results in an even number
-func CalculateMerkleRoot(txn []Txn) string {
+func CalculateMerkleRoot(txns []Txn) string {
   txnHashes := []string{}
 
   //converts []Txn into array of sha256 strings
-  for _, tx := range txn{
+  for _, tx := range txns{ //change to txns from tx
     t := sha256.Sum256(TxnToByte(tx))
     txnHashes = append(txnHashes, hex.EncodeToString(t[:]))
 
