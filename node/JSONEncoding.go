@@ -21,6 +21,8 @@ func BlockToJson(block Block) []byte{
   return block_Json;
 }
 
+//encode a test txn w/ JSON
+/*
 func TestTxnToJson(txn TestTxn) []byte {
   tstTxn_Json, err := json.Marshal(txn)
   if err != nil {
@@ -29,6 +31,7 @@ func TestTxnToJson(txn TestTxn) []byte {
 
   return tstTxn_Json;
 }
+*/
 
 func TxnToJson(txn Txn) []byte{
   txn_json, err := json.Marshal(txn)

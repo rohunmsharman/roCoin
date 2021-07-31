@@ -32,7 +32,22 @@ func main() {
 
   cmd.Execute() //RUN EVERYTHING THROUGH CLI NOW
 
+  //figuring out why gob decoder fails to read wallet
+  noKey := node.Wallet{Name: "bob", Coins: 300}
+  withKey := node.NewWallet("alice", 600)
 
+  fmt.Println("")
+
+  node.SaveWallet(noKey)
+  node.SaveWallet(withKey)
+
+  fmt.Println("no key: ")
+  nK := node.ReadWallet("bob_wallet.gob")
+  fmt.Println(nK)
+
+  fmt.Println("with key: ")
+  wK := node.ReadWallet("alice_wallet.gob")
+  fmt.Println(wK)
 
   //GEN TEST
   /*
