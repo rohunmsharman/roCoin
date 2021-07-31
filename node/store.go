@@ -4,35 +4,39 @@ import (
   "fmt"
   "os"
   "encoding/gob"
+  //"bufio"
   //"github.com/syndtr/goleveldb"
 )
 
 //func StoreUTXO()
 
+
 func SaveWallet(w Wallet) {
-  wFile, err := os.Create("localWallet.gob")
+  name := w.Name + "_wallet.gob"
+  wFile, err := os.Create(name)
 
   if err != nil {
     fmt.Println("wallet failed to save locally")
-    fmt.Println(err)
+    panic(err)
     os.Exit(1)
   } else {
     fmt.Println("wallet saved")
+    fmt.Println(err)
   }
 
   enc := gob.NewEncoder(wFile)
-  enc.Encode(w)
-
+  enc.Encode(&w) //was originally just w
 
 }
 
-func ReadWallet() Wallet {
+//!! Returns EOF error when trying to read wallet from gob file
+func ReadWallet(wName string) Wallet {
   var w Wallet
-  wFile, err := os.Open("localWallet.gob")
+  wFile, err := os.Open(wName)
 
   if err != nil{
-    fmt.Println("failed to open localWallet.gob")
-    fmt.Println(err)
+    fmt.Println("failed to open ", wFile)
+    panic(err)
     os.Exit(1)
   }
 
@@ -40,7 +44,9 @@ func ReadWallet() Wallet {
   err = dec.Decode(&w)
 
   if err != nil{
-    fmt.Println(err)
+    fmt.Println(1)
+    //fmt.Println(err)
+    panic(err)
     os.Exit(1)
   }
   wFile.Close()

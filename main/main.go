@@ -1,19 +1,33 @@
 package main
 
 import(
-  //"fmt"
+  "fmt"
   //"crypto/ecdsa"
   //"math/big"
   //"encoding/hex"
   //"strconv"
   //"unsafe"
-  //"roCoin/node"
+  "roCoin/node"
   "roCoin/cmd"
   //"roCoin.com/roCoin/node" //the goroot issue was fixed by roCoin.com ....
 )
 
 
 func main() {
+
+  //txn marshalling test
+  bob := node.NewWallet("bob", 500)
+  alice := node.NewWallet("alice", 600)
+
+  tx1 := node.CreateTxn(bob, alice, 300)
+  bob.SignTxn(tx1)
+
+  fmt.Println("marshalling txn")
+  marshalTx1 := tx1.MarshalTx()
+  unmarshalTx1 := node.UnmarshalTx(marshalTx1)
+
+  fmt.Println(unmarshalTx1)
+
   cmd.Execute() //RUN EVERYTHING THROUGH CLI NOW
 
 /*  genTxn := node.Txn{RecipPubKey: nil, SenderPubKey: nil, }
@@ -41,20 +55,13 @@ func main() {
   fmt.Println(chain[0])
 
   bob := node.NewWallet("bob", 100)
-  //fmt.Println(bob.Name, " ", bob.Coins)
   alice := node.NewWallet("alice", 50)
 
 
-  //add txns works
-  tstTxns := []node.Txn{node.CreateTxn(bob, alice, 50)}
-  tstTxns = append(tstTxns, node.CreateTxn(bob, alice, 30))
-  tstTxns = append(tstTxns, node.CreateTxn(bob, alice, 40))
-  tstTxns = append(tstTxns, node.CreateTxn(bob, alice, 20))
+  //add txns
+  tstTxns := []node.Txn{}
+  tx1 := node.CreateTxn(bob, alice, 20)
 
-  tstTxns = append(tstTxns, node.CreateTxn(bob, alice, 10))
-  tstTxns = append(tstTxns, node.CreateTxn(bob, alice, 60))
-  tstTxns = append(tstTxns, node.CreateTxn(bob, alice, 15))
-  tstTxns = append(tstTxns, node.CreateTxn(bob, alice, 12))
 
   mR := node.CalculateMerkleRoot(tstTxns)
   //fmt.Println(node.CalculateMerkleRoot(tstTxns))
@@ -79,6 +86,7 @@ func main() {
   node.SaveChain(chain)
 
   fmt.Println(len(node.ReadChain()))
+  fmt.Println("")
 
   fmt.Println(string(node.BlockToJson(chain[1])))
   */
