@@ -19,7 +19,7 @@ const TxnStreamBufSize = 128
 //txns are pushed to the Txns channel
 type TxnStream struct{
   //Transactions is a channel of txns received from peers
-  Transactions chan *node.TestTxn
+  Transactions chan *node.Txn
 
   ctx context.Context
   ps *pubsub.PubSub
@@ -50,7 +50,7 @@ func JoinTxnStream(ctx context.Context, ps *pubsub.PubSub, selfID peer.ID, strea
     sub: sub,
     self: selfID,
     TxnStreamName: streamName,
-    Transactions: make(chan *node.TestTxn, TxnStreamBufSize), //change back to normal txn after testing
+    Transactions: make(chan *node.Txn, TxnStreamBufSize), //change back to normal txn after testing
   }
 
   //start reading messages from the subscription in a loop
@@ -59,18 +59,27 @@ func JoinTxnStream(ctx context.Context, ps *pubsub.PubSub, selfID peer.ID, strea
 }
 
 //Publish sends txn to PubSub topic
+func (ts *TxnStream) Publish(txnToPub node.Txn) error {
+  txBytes := txnToPub.MarshalTx()
+  fmt.Println("publishing txn: ", txnToPub.TxnID)
+
+  return ts.topic.Publish(ts.ctx, txBytes);
+}
+
+/*
+//PUBLISH FOR TEST TXN
 func (ts *TxnStream) Publish(txnToPub node.TestTxn) error {
   //TxnToJson outputs byte array of txn
   //txBytes := node.TxnToJson(txnToPub) //commented out for testing
-  txBytes := node.TestTxnToJson(txnToPub)
+  txBytes := node.TxnToJson(txnToPub)
   fmt.Println("publishing txn")
   return ts.topic.Publish(ts.ctx, txBytes)
 }
-
+*/
 //loop pulls txns from the pubsub topic and pushes them onto the Transactions channel
 func (ts *TxnStream) ReadLoop() {
   for {
-    txMsg, err := ts.sub.Next(ts.ctx) //Next() returns type message from PubSub
+    txMsg, err := ts.sub.Next(ts.ctx) //Next() returns txn as type ipubsub.Message
     if err != nil {
       close(ts.Transactions)
       return
@@ -80,32 +89,31 @@ func (ts *TxnStream) ReadLoop() {
       continue
     }
 
-    tx := new(node.TestTxn)
-    err = json.Unmarshal(txMsg.Data, tx)
-    if err != nil {
-      continue
-    }
+    tx := node.Unmarshal(txMsg.Data) //txMsg.Data from ipubusub.Message struct
+    //err = json.Unmarshal(txMsg.Data, tx)
+
     //send unmarshaled valid messages onto the Transactions channel
     ts.Transactions <- tx
   }
 }
 //handles what to do on Transactions channel
-func (ts *TxnStream) HandleEvents(){
+func (ts *TxnStream) HandleEvents() []node.Txn{
   refreshTicker := time.NewTicker(time.Second)
   defer refreshTicker.Stop()
-
-  for{
+  var InTxns []node.Txn
+  for {
+    //maybe add a sleep?
+    //this handler needs to be edited!
     select{
       case inTx := <- ts.Transactions:
-        fmt.Println(inTx)
-        if inTx.Recipient == "exit"{
-          fmt.Println("exit txn receieved, exiting")
-          return
-        }
-
+        fmt.Println("new txn received")
+        InTxns = InTxns.append(InTxns, inTx)
+      }
     }
-  }
+    //returns array of all txns from ts
+   return InTxns;
 }
+
 
 func (ts *TxnStream) ListPeers() []peer.ID {
   return ts.ps.ListPeers(TopicName(ts.TxnStreamName))

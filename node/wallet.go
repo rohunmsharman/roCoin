@@ -15,6 +15,7 @@ type Wallet struct{
   Coins int
   PrivKey *ecdsa.PrivateKey
   PubKey ecdsa.PublicKey
+  //UTXOs
 
 }
 

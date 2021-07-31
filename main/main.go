@@ -16,6 +16,7 @@ import(
 func main() {
 
   //txn marshalling test
+  /*
   bob := node.NewWallet("bob", 500)
   alice := node.NewWallet("alice", 600)
 
@@ -27,22 +28,10 @@ func main() {
   unmarshalTx1 := node.UnmarshalTx(marshalTx1)
 
   fmt.Println(unmarshalTx1)
+  */
 
   cmd.Execute() //RUN EVERYTHING THROUGH CLI NOW
 
-/*  genTxn := node.Txn{RecipPubKey: nil, SenderPubKey: nil, }
-  w1 := node.NewWallet("bob")
-  w2 := node.NewWallet("alice")
-  //fmt.Println(w1.PrivKey.PublicKey)
-
-  tx1 := node.CreateTxn(w1, w2, 50)
-  //fmt.Println(tx1.SenderPubKey.XY)
-
-  fmt.Println(node.VerifySig(w1, tx1))
-  */
-  //fmt.Println(tx1)
-
-  //fmt.Println(node.CreateTxn(w1, w2, 50))
 
 
   //GEN TEST
