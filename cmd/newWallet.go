@@ -34,6 +34,7 @@ var newWalletCmd = &cobra.Command{
 		if err != nil{
 			panic(err)
 		}
+		
 		node.SaveWallet(node.NewWallet(args[0], tInt))
 
 		//fmt.Println(w1)

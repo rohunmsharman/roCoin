@@ -48,6 +48,8 @@ func (w *Wallet) Print(){
 func NewWallet(name string, amount int) Wallet{
   wName := name
   pK := make(map[string]int)
+  pK["holder"] = 0 //to allow gob to encode it
+  //fmt.Println("privKey map: ", pK)
   privKey, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
   if err != nil{
     panic(err)

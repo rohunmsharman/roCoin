@@ -2,6 +2,7 @@ package main
 
 import(
   "fmt"
+  "encoding/json"
   //"crypto/ecdsa"
   //"math/big"
   //"encoding/hex"
@@ -32,7 +33,24 @@ func main() {
 
   cmd.Execute() //RUN EVERYTHING THROUGH CLI NOW
 
+  bob := node.NewWallet("bob", 500)
+  alice := node.NewWallet("alice", 500)
+  
+  tx1 := node.CreateTxn(bob, alice, 200)
+  fmt.Println(tx1)
+  tx_Json := node.TxnToJson(tx1)
+  fmt.Println(tx_Json)
+  var txUnmarshal node.Txn
+  err := json.Unmarshal(tx_Json, &txUnmarshal)
+  if err != nil {
+    panic(err)
+  }
+
+  fmt.Println(txUnmarshal)
+
+
   //figuring out why gob decoder fails to read wallet
+  /*
   noKey := node.Wallet{Name: "bob", Coins: 300}
   withKey := node.NewWallet("alice", 600)
 
@@ -48,6 +66,7 @@ func main() {
   fmt.Println("with key: ")
   wK := node.ReadWallet("alice_wallet.gob")
   fmt.Println(wK)
+  */
 
   //GEN TEST
   /*

@@ -4,16 +4,19 @@ import (
   "fmt"
   "os"
   "encoding/gob"
+  "encoding/json"
+  //"bytes"
   //"bufio"
   //"github.com/syndtr/goleveldb"
 )
 
 //func StoreUTXO()
 
-
 func SaveWallet(w Wallet) {
   name := w.Name + "_wallet.gob"
   wFile, err := os.Create(name)
+  wBytes := WalletToJson(w) //wrap wallet in json to deal with big int problem
+  //idk if the json wrapping is actually necessary, but im leaving it
 
   if err != nil {
     fmt.Println("wallet failed to save locally")
@@ -21,17 +24,18 @@ func SaveWallet(w Wallet) {
     os.Exit(1)
   } else {
     fmt.Println("wallet saved")
+    fmt.Println("errors: ")
     fmt.Println(err)
   }
 
   enc := gob.NewEncoder(wFile)
-  enc.Encode(&w) //was originally just w
+  enc.Encode(&wBytes) //was originally just w
 
 }
 
-//!! Returns EOF error when trying to read wallet from gob file
 func ReadWallet(wName string) Wallet {
   var w Wallet
+  var wBytes []byte
   wFile, err := os.Open(wName)
 
   if err != nil{
@@ -41,14 +45,15 @@ func ReadWallet(wName string) Wallet {
   }
 
   dec := gob.NewDecoder(wFile)
-  err = dec.Decode(&w)
-
+  err = dec.Decode(&wBytes)
+  //err = dec.Decode(&w)
   if err != nil{
     fmt.Println(1)
     //fmt.Println(err)
     panic(err)
     os.Exit(1)
   }
+  err = json.Unmarshal(wBytes, &w)
   wFile.Close()
   return w;
 
