@@ -19,7 +19,7 @@ import (
 	"fmt"
 	"roCoin/node"
 	"github.com/spf13/cobra"
-	"strconv"
+	//"strconv"
 )
 
 // newWalletCmd represents the newWallet command
@@ -27,15 +27,12 @@ var newWalletCmd = &cobra.Command{
 	Use:   "newWallet", //ADD FLAGS!!
 	Short: "generates new wallet",
 	Long: `creates a new wallet, prints out wallet info, will save wallet info as gob file `,
-	Args: cobra.MinimumNArgs(2),
+	Args: cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("creating new wallet")
-		tInt, err := strconv.Atoi(args[1])
-		if err != nil{
-			panic(err)
-		}
-		
-		node.SaveWallet(node.NewWallet(args[0], tInt))
+		//tInt, err := strconv.Atoi(args[1])
+
+		node.SaveWallet(node.NewWallet(args[0]))
 
 		//fmt.Println(w1)
 	},

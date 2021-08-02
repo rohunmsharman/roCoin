@@ -31,6 +31,7 @@ const DiscoveryInterval = time.Hour
 const DiscoveryServiceTag = "roCoin-net"
 
 //connects node to network
+/*
 func Connect(ctx context.Context, streamName string) {
 	fmt.Println("setting up connection")
 	//first argument should just be the string
@@ -62,6 +63,7 @@ func Connect(ctx context.Context, streamName string) {
  		go ts.HandleEvents()
 	}
 }
+*/
 
 func Setup(ctx context.Context) (host.Host, *pubsub.PubSub, error) { //add argument for specific port
   //create new libp2p Host listening on a random tcp port

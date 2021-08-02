@@ -4,9 +4,6 @@ import(
   "crypto/ecdsa"
   "crypto/rand"
   "crypto/elliptic"
-  //"encoding/gob"
-  //"math/big"
-
 )
 
 type Wallet struct{
@@ -32,16 +29,6 @@ func (w Wallet) SignTxn(txn Txn, prevTxn Txn) {
 }
 
 
-
-//prints wallet info
-func (w *Wallet) Print(){
-  fmt.Println("Name: ", w.Name)
-  fmt.Println("Private Keys (UTXOS): ", len(w.UTXOs))
-  fmt.Println("Coins: ", w.Coins)
-  fmt.Println("Private Key: ", w.PrivKey.D.String())
-  fmt.Println("Public Key: ", w.PrivKey.PublicKey.X, " ", w.PrivKey.PublicKey.Y)
-}
-
 func NewWallet(name string) Wallet{
   wName := name
   //var utxo []Txn
@@ -63,4 +50,13 @@ func NewWallet(name string) Wallet{
 
   //coin amount should be determined by UTXOs
   return Wallet{Name: wName, Coins: 0, PrivKey: privKey, PubKey: privKey.PublicKey}
+}
+
+//prints wallet info
+func (w *Wallet) Print(){
+  fmt.Println("Name: ", w.Name)
+  fmt.Println("Private Keys (UTXOS): ", len(w.UTXOs))
+  fmt.Println("Coins: ", w.Coins)
+  fmt.Println("Private Key: ", w.PrivKey.D.String())
+  fmt.Println("Public Key: ", w.PrivKey.PublicKey.X, " ", w.PrivKey.PublicKey.Y)
 }

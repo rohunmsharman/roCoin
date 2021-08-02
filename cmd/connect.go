@@ -19,7 +19,7 @@ import (
 
 	"fmt"
 	"context"
-	"roCoin/node"
+	//"roCoin/node"
 	"roCoin/networking"
 	//"strconv"
 	//"time"
@@ -27,6 +27,7 @@ import (
 )
 
 // connectCmd represents the connect command
+//!! TO BE rewritten as connectTest, returning true if node can connect to network
 var connect = &cobra.Command{
 	Use:   "connect",
 	Short: "connects node to p2p network",
@@ -62,43 +63,8 @@ var connect = &cobra.Command{
 			panic(err)
 		}
 
-
-		//testing DO NOT DELETE
-		//the connect works, broadcasting the TXNs works, just need to create better handling
-		var in int
-		fmt.Println("peer 1 or 2?")
-		fmt.Scanln(&in)
-
-		tstTxns := []node.TestTxn{}
-		if in == 1 {
-			fmt.Println("send test txns? type 1 again")
-			fmt.Scanln(&in)
-			if in == 1 {
-				tstTxns = append(tstTxns, node.TestTxn{Sender: "bob", Recipient: "alice", Amount: 30})
-				tstTxns = append(tstTxns, node.TestTxn{Sender: "alice", Recipient: "bob", Amount: 40})
-				tstTxns = append(tstTxns, node.TestTxn{Sender: "bob", Recipient: "alice", Amount: 15})
-				for _, txn := range tstTxns {
-					ts.Publish(txn)
-				}
-			}
-
-		}
-
-		if in == 2 {
-			/*
-			tstTxns = append(tstTxns, node.TestTxn{Sender: "michelle", Recipient: "britney", Amount: 10})
-			tstTxns = append(tstTxns, node.TestTxn{Sender: "britney", Recipient: "michelle", Amount: 20})
-			tstTxns = append(tstTxns, node.TestTxn{Sender: "michelle", Recipient: "britney", Amount: 90})
-			*/
-			for {
-				go ts.HandleEvents()
-			}
-
-		}
-
-
-
-		  //run event handler
+		go ts.HandleEvents()
+		//testing located in test.go, package testing
 
 
 

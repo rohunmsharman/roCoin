@@ -2,8 +2,6 @@ package node
 import(
   "fmt"
   "crypto/sha256"
-  "encoding/hex"
-  //"encoding/json"
   "time"
   "strconv"
 )
@@ -33,13 +31,6 @@ func CalculateHash(block Block) []byte {
   return stretch;
 }
 
-func HashToString(hash []byte) string{
-  return (hex.EncodeToString(hash[:]))
-}
-
-func ByteToString(hash []byte) string {
-  return (hex.EncodeToString(hash[:]))
-}
 
 //rewrite NewBlock to take in an array of txns and output block, pull everything else of valid chain state
 func NewBlock(prevBlock Block, txns []Txn, hash string, target int) Block{
@@ -55,12 +46,14 @@ func NewBlock(prevBlock Block, txns []Txn, hash string, target int) Block{
   return newBlock;
 }
 
-/*
+
 func GenesisBlock() Block {
-  genesis := Block{Index: 0, Txns: }
+  nilTxn := NilTxn()
+  genTxns := []Txn{nilTxn}
+  nilBytes := []byte("nil")
+  genesis := Block{Index: 0, Txns: genTxns, PrevHash: nilBytes, Hash: nilBytes, MerkleRoot: nilBytes, Timestamp: nilBytes, Nonce: 0, Target: 0}
   return genesis;
 }
-*/
 
 func PrintBlock(block Block){
   fmt.Println("Block Index: ", block.Index)

@@ -39,7 +39,3 @@ func MineBlock(block Block) bool{
   fmt.Println("nonce: " + strconv.Itoa(block.Nonce) + " Hash: " + HashToString(block.Hash))
   return true; //should return true once the hash meets min size
 }
-
-func IntToHex(n int64) []byte{
-  return []byte(strconv.FormatInt(n, 16))
-}

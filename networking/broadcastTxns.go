@@ -6,7 +6,7 @@ import (
   "context"
   "roCoin/node"
   "github.com/libp2p/go-libp2p-core/peer"
-  "os/signal"
+  //"os/signal"
   pubsub "github.com/libp2p/go-libp2p-pubsub"
 )
 
@@ -97,8 +97,8 @@ func (ts *TxnStream) ReadLoop() {
   }
 }
 //handles what to do on Transactions channel
-func (ts *TxnStream) HandleEvents() txn {
-  c := make(chan os.Signal, 1) //channel to handle os Signal
+func (ts *TxnStream) HandleEvents() node.Txn{
+  //c := make(chan os.Signal, 1) //channel to handle os Signal
   refreshTicker := time.NewTicker(time.Second)
   defer refreshTicker.Stop()
   //InTxns := []node.Txn{}
@@ -109,11 +109,11 @@ func (ts *TxnStream) HandleEvents() txn {
       case inTx := <- ts.Transactions:
         fmt.Println("new txn received")
         //InTxns = append(InTxns, *inTx)
-        return txn
+        return *inTx
       }
     }
-    //returns array of all txns from ts
-   return InTxns;
+    fmt.Println("returning nil txn: ")
+    return node.NilTxn()
 }
 
 

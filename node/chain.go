@@ -49,6 +49,8 @@ func TxnsValid(txns []Txn) bool {
   }
   return true;
 }
+
+
 func PoWCheck(b Block) bool {
   var hashInt big.Int
   hash := CalculateHash(b)
