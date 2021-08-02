@@ -5,11 +5,9 @@ import(
 )
 
 type Txn struct{
-  RecipPubKey ecdsa.PublicKey //!!should be stored as actual ecdsa PubKey
-  //SenderPubKey ecdsa.PublicKey //!!should be stored as actual ecdsa PubKey
-  Sig []byte
-  //Amount int
-  TxnID []byte
+  RecipPubKey ecdsa.PublicKey //pubkey of recipient
+  Sig []byte //signature of txnID using sender privKey
+  TxnID []byte //sha256 hash of txn
 }
 
 //for hashing purposes, alterantively could use byte arrays
@@ -20,7 +18,6 @@ type PubKStr struct {
 }
 
 
-//!!Change in arguments needed to support cli and sending
 func (w Wallet) NewTxn(recipient ecdsa.PublicKey, prevTxn Txn) Txn {
   tx := Txn{RecipPubKey: recipient} //initialize tx
 
@@ -37,7 +34,6 @@ func VerifyTxn(prevTxPubKey ecdsa.PublicKey, tx Txn) bool { //prevTxPubKey = sen
   valid := ecdsa.VerifyASN1(&prevTxPubKey, tx.TxnID, tx.Sig) //&sendW.Pubkey = *ecdsa.PubKey
   return valid;
 }
-
 
 
 //returns nil txn that can be encoded with gob (no nil interfaces)
