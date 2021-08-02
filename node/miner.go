@@ -17,12 +17,12 @@ func MineBlock(block Block) bool{
   targetInt.Lsh(targetInt, uint(256 - block.Target)) //shift the big.Int left by 256 - Target
 
 
-  fmt.Println("mining: ") //i think this is correct
+  fmt.Println("mining: ")
 
   for hf.Cmp(targetInt) != -1{
 
     block.Nonce++
-    block.Hash = HashToString(CalculateHash(block))
+    block.Hash = CalculateHash(block)
     hash = CalculateHash(block)
     hf = hashInt.SetBytes(hash[:])
 
@@ -31,14 +31,12 @@ func MineBlock(block Block) bool{
     fmt.Println()
     fmt.Println("target size: ", targetInt)
     */
-
-
   }
   fmt.Println("block mined! ")
   fmt.Println("hash size: ", hf)
-  fmt.Println()
+  fmt.Println("")
   fmt.Println("target size: ", targetInt)
-  fmt.Println("nonce: " + strconv.Itoa(block.Nonce) + " Hash: " + block.Hash)
+  fmt.Println("nonce: " + strconv.Itoa(block.Nonce) + " Hash: " + HashToString(block.Hash))
   return true; //should return true once the hash meets min size
 }
 

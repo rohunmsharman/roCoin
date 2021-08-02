@@ -30,6 +30,39 @@ const DiscoveryInterval = time.Hour
 //to be use in mDNS advertisements to discover other chat peers
 const DiscoveryServiceTag = "roCoin-net"
 
+//connects node to network
+func Connect(ctx context.Context, streamName string) {
+	fmt.Println("setting up connection")
+	//first argument should just be the string
+	//port, err := strconv.Atoi(args[0])
+	//if err != nil {
+		//panic(err)
+	//}
+	//take in name of txn stream as argument
+	txnStrm := streamName
+
+	//ctx := context.Background()
+	// h is host, ps is pubsub from gossibRouter, err is error
+	h, ps, err := networking.Setup(ctx)
+	if err != nil {
+		panic(err)
+	}
+
+	//setup local mDNS discovery
+	err = networking.SetupDiscovery(ctx, h)
+	if err != nil {
+		panic(err)
+	}
+
+	ts, err := networking.JoinTxnStream(ctx, ps, h.ID(), txnStrm)
+	if err != nil {
+		panic(err)
+	}
+	for { //this loops needs to have a terminating condition
+ 		go ts.HandleEvents()
+	}
+}
+
 func Setup(ctx context.Context) (host.Host, *pubsub.PubSub, error) { //add argument for specific port
   //create new libp2p Host listening on a random tcp port
   h, err := libp2p.New(ctx, libp2p.ListenAddrStrings("/ip4/0.0.0.0/tcp/0"))

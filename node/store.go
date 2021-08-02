@@ -11,6 +11,39 @@ import (
 )
 
 //func StoreUTXO()
+//save configVars locally
+func SaveConfig(config ConfigVars) {
+  configFile, err := os.Create("configVars.gob")
+  if err != nil {
+    fmt.Println("failed to create config file")
+    panic(err)
+    os.Exit(1) //not sure if this needs to b here
+  }
+
+  enc := gob.NewEncoder(configFile)
+  enc.Encode(&config)
+  fmt.Println("config vars saved")
+}
+
+//open and return config vars
+func ReadConfig() ConfigVars{
+  var configVars ConfigVars
+  configFile, err := os.Open("configVars.gob")
+  if err != nil {
+    panic(err)
+    os.Exit(1)
+  }
+
+  dec := gob.NewDecoder(configFile)
+  err = dec.Decode(&configVars)
+  if err != nil {
+    panic(err)
+    os.Exit(1)
+  }
+
+  configFile.Close()
+  return configVars
+}
 
 func SaveWallet(w Wallet) {
   name := w.Name + "_wallet.gob"

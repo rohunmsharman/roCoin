@@ -3,7 +3,7 @@ package node
 import(
   "fmt"
   "crypto/sha256"
-  //"crypto/ecdsa"
+  "crypto/ecdsa"
   //"crypto/rand"
   //"math/big"
   //"io"
@@ -15,20 +15,29 @@ import(
 )
 
 type Txn struct{
-  RecipPubKey PublicKey //!!should be stored as actual ecdsa PubKey
-  SenderPubKey PublicKey //!!should be stored as actual ecdsa PubKey
+  RecipPubKey ecdsa.PublicKey //!!should be stored as actual ecdsa PubKey
+  //SenderPubKey ecdsa.PublicKey //!!should be stored as actual ecdsa PubKey
+
   Sig []byte
-  Amount int
+  //Amount int
   TxnID []byte
 }
 
-//for hashing purposes, will depracate when networking begins
-type PublicKey struct {
+//for hashing purposes, alterantively could use byte arrays
+type PubKStr struct {
   X  string //big.Int changed to string to support gob encoding
   Y  string //big.Int changed to string to support gob encoding
   XY []byte
 }
 
+//also for hashing purposes
+func TxnStrDigest(key ecdsa.PublicKey) PubKStr {
+  var out PubKStr
+  out.X = key.X.String() //key X value
+  out.Y = key.Y.String() //key Y value
+  out.XY = append(key.X.Bytes(), key.Y.Bytes()...)
+  return out;
+}
 //encodes txn as gob to be broadcasted
 func (tx Txn) MarshalTx() []byte{
   var buf bytes.Buffer
@@ -52,65 +61,43 @@ func UnmarshalTx(inTx []byte) Txn {
     panic(err)
     return txn
   }
-
   return txn;
 }
 
 
-//needs to be depracated
-func TxnHash(txn Txn) string {
-  txId := sha256.Sum256(txn.RecipPubKey.XY[:]) //!! need to add prev txn
-  return (hex.EncodeToString(txId[:]));
-}
-
-func TxnHashByte(txn Txn) []byte {
-  txId := sha256.Sum256(txn.RecipPubKey.XY[:])
+func TxnHashByte(txn Txn, utxo Txn) []byte { //need to add prev txn
+  txStrTemp := TxnStrDigest(txn.RecipPubKey) //creates temp tx of type PubKStr
+  t := append(txStrTemp.XY[:], utxo.TxnID...)
+  txId := sha256.Sum256(t)
   return txId[:];
 }
 
-//returns new txn
-func CreateTxn(sender Wallet, recipient Wallet, amount int) Txn{
-  rX := recipient.PubKey.X.String() //recipient pubKey X
-  rY := recipient.PubKey.Y.String() //recipient pubKey Y
-  sX := sender.PubKey.X.String() //sender pubKey X
-  sY := sender.PubKey.Y.String() //sender pubKey Y
+//!!Change in arguments needed to support cli and sending
+func (w Wallet) NewTxn(recipient ecdsa.PublicKey, prevTxn Txn) Txn {
+  tx := Txn{RecipPubKey: recipient} //initialize tx
 
-  recipKey := PublicKey{X: rX, Y: rY}
-  recipKey.XY = append(recipient.PubKey.X.Bytes(), recipient.PubKey.Y.Bytes()...)
+  txId := TxnHashByte(tx, prevTxn) //get tx hash
+  tx.TxnID = txId //add hash to tx
 
-  sendKey := PublicKey{X: sX, Y: sY}
-  sendKey.XY = append(sender.PubKey.X.Bytes(), sender.PubKey.Y.Bytes()...)
+  w.SignTxn(tx, prevTxn) //sender wallet signs the txn
 
-  TXN := Txn{RecipPubKey: recipKey, SenderPubKey: sendKey, Amount: amount}
-  TXN.TxnID = TxnHashByte(TXN)
-  //TXN.SenderSig = SignTxn(sender, TXN)
-  return TXN;
+  return tx;
 }
 
-/* SignTxn(wallet Wallet, txn Txn) []byte{
-  sig, err := ecdsa.SignASN1(rand.Reader, &wallet.PrivKey, []byte(txn.TxnID))
-  if err != nil{
-    panic(err)
-  }
-  return sig;
+//verify txn
+func VerifyTxn(prevTxPubKey ecdsa.PublicKey, tx Txn) bool { //prevTxPubKey = sender pubkey
+  valid := ecdsa.VerifyASN1(&prevTxPubKey, tx.TxnID, tx.Sig) //&sendW.Pubkey = *ecdsa.PubKey
+  return valid;
 }
-*/
-
-/*
-func VerifySig(wallet Wallet, txn Txn) bool {
-  fmt.Println("signature: %x\n", txn.SenderSig) //formatting for signature
-  return ecdsa.VerifyASN1(&wallet.PrivKey.PublicKey, []byte(txn.TxnID), txn.SenderSig[:]);
-}
-*/
-
 
 //def needs to be redone, can only take numbers whose divison by two always results in an even number
-func CalculateMerkleRoot(txns []Txn) string {
+func CalculateMerkleRoot(txns []Txn) []byte {
+  //this needs to be rewritten without strings, using only byte arrays
   txnHashes := []string{}
 
   //converts []Txn into array of sha256 strings
   for _, tx := range txns{ //change to txns from tx
-    t := sha256.Sum256(TxnHashByte(tx))
+    t := sha256.Sum256(TxnHashByte(tx)) //NEED TO HAVE PREV TXN PASSSED IN
     txnHashes = append(txnHashes, hex.EncodeToString(t[:]))
 
   }
@@ -136,16 +123,12 @@ func CalculateMerkleRoot(txns []Txn) string {
     txnHashes = txnHashes[:(len(txnHashes)/2)] //current fix, honestly idk how to loop this better
 
   }
-  return txnHashes[0]; //outputs parents hash
+  return []byte(txnHashes[0]); //outputs parents hash string as byte array
 }
 
-//converts a txn to byte array
-//!! TO BE DEPRACATED
 /*
-func TxnToByte(txn Txn) []byte{
-    str := strconv.Itoa(txn.Amount) + txn.TxnID //REWRITE
-    byteTxn := []byte(str)
-    return byteTxn;
+func NilTxn() Txn {
 
+  //returns an empty txn, no field is nil to accomodate encoding, but all fields are meaningless
 }
 */

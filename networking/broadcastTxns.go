@@ -6,7 +6,7 @@ import (
   "context"
   "roCoin/node"
   "github.com/libp2p/go-libp2p-core/peer"
-  "encoding/json"
+  "os/signal"
   pubsub "github.com/libp2p/go-libp2p-pubsub"
 )
 
@@ -89,25 +89,27 @@ func (ts *TxnStream) ReadLoop() {
       continue
     }
 
-    tx := node.Unmarshal(txMsg.Data) //txMsg.Data from ipubusub.Message struct
+    tx := node.UnmarshalTx(txMsg.Data) //txMsg.Data from ipubusub.Message struct
     //err = json.Unmarshal(txMsg.Data, tx)
 
     //send unmarshaled valid messages onto the Transactions channel
-    ts.Transactions <- tx
+    ts.Transactions <- &tx //used to be just tx, im only kinda sure why & makes it a *Txn
   }
 }
 //handles what to do on Transactions channel
-func (ts *TxnStream) HandleEvents() []node.Txn{
+func (ts *TxnStream) HandleEvents() txn {
+  c := make(chan os.Signal, 1) //channel to handle os Signal
   refreshTicker := time.NewTicker(time.Second)
   defer refreshTicker.Stop()
-  var InTxns []node.Txn
+  //InTxns := []node.Txn{}
   for {
     //maybe add a sleep?
     //this handler needs to be edited!
     select{
       case inTx := <- ts.Transactions:
         fmt.Println("new txn received")
-        InTxns = InTxns.append(InTxns, inTx)
+        //InTxns = append(InTxns, *inTx)
+        return txn
       }
     }
     //returns array of all txns from ts

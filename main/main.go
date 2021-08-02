@@ -1,8 +1,8 @@
 package main
 
 import(
-  "fmt"
-  "encoding/json"
+  //"fmt"
+  //"encoding/json"
   //"crypto/ecdsa"
   //"math/big"
   //"encoding/hex"
@@ -16,26 +16,17 @@ import(
 
 func main() {
 
-  //txn marshalling test
-  /*
-  bob := node.NewWallet("bob", 500)
-  alice := node.NewWallet("alice", 600)
-
-  tx1 := node.CreateTxn(bob, alice, 300)
-  bob.SignTxn(tx1)
-
-  fmt.Println("marshalling txn")
-  marshalTx1 := tx1.MarshalTx()
-  unmarshalTx1 := node.UnmarshalTx(marshalTx1)
-
-  fmt.Println(unmarshalTx1)
-  */
+  //ADD goroutines to keep receiving txns and handling them
 
   cmd.Execute() //RUN EVERYTHING THROUGH CLI NOW
 
+
+
+  //json marhsalling test?
+  /*
   bob := node.NewWallet("bob", 500)
   alice := node.NewWallet("alice", 500)
-  
+
   tx1 := node.CreateTxn(bob, alice, 200)
   fmt.Println(tx1)
   tx_Json := node.TxnToJson(tx1)
@@ -45,8 +36,8 @@ func main() {
   if err != nil {
     panic(err)
   }
+  */
 
-  fmt.Println(txUnmarshal)
 
 
   //figuring out why gob decoder fails to read wallet
